@@ -14,5 +14,17 @@ class Position:
             x increases when moving to the right and y increases when you move down.
 
             """
-        self.X = x
-        self.Y = y
+
+        self.x, self.y = x, y
+
+    # method modifying the displayed object when it is called
+    # ex :
+    # display without using the method :
+    # <gamemaze.models.position.Position object at 0x0F281570>
+    # display without using the method : (0, 0)
+    def __repr__(self):
+        """When we enter our object in the interpreter the method
+        modifies the display of the object when it is called"""
+        return "({}, {})".format(self.x, self.y)
+
+

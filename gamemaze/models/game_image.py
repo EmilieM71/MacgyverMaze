@@ -6,28 +6,23 @@ class GameImage:
 
     def __init__(self, file_path, x, y, w, h, width, height):
 
-        # Load image
+        # For load image
         self.file_path = file_path
 
-        # crop images
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
+        # Parameter for crop images
+        self.x, self.y, self.w, self.h = x, y, w, h
 
-        # Resizing image
-        self.width = width
-        self.height = height
+        # Parameter for resizing image
+        self.width, self.height = width, height
 
-    def load_image(self):
-        pygame.transform.scale(
+        # Surface use for PyGame
+        self.surface = pygame.transform.scale(
             (pygame.image.load(self.file_path)).subsurface(
                 self.x, self.y, self.w, self.h), (self.width, self.height))
 
 
 def main():
-    hero = GameImage(HERO_SOURCE, 0, 0, 32, 32, SIZE_SPRITE, SIZE_SPRITE)
-    hero.load_image()
+    pass
 
 
 if __name__ == "__main__":
