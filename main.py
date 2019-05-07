@@ -3,7 +3,6 @@ from pygame.locals import QUIT, KEYDOWN, K_ESCAPE
 from gamemaze.constants import (COTE_WINDOW, IMAGE_ICON, TITLE_WINDOW,
                                 HERO_SOURCE, KEEPER_IMAGE, SIZE_SPRITE)
 from gamemaze.models.game_image import GameImage
-from gamemaze.models.character import Character
 from gamemaze.models.hero import Hero
 from gamemaze.models.maze import Maze
 
@@ -40,13 +39,9 @@ while main_loop:
     # Create and display character
     for element in level.Elements:
         if element.Name == 'start':
-            position_hero = (element.Position.x, element.Position.y)
-            mg = Hero('MacGyver', hero.surface, position_hero)
+            position_hero = element.X, element.Y
+            mg = Hero('MacGyver', hero.surface, element.X, element.Y)
             mg.display(window)
-        elif element.Name == 'end':
-            position_guardian = (element.Position.x, element.Position.y)
-            guardian = Character('keeper', keeper.surface, position_guardian)
-            guardian.display(window)
 
     for event in pygame.event.get():  # We track the list of all the events received
         # If user quit the program stop or if the user presses a ESCAPE key
