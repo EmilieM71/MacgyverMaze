@@ -37,22 +37,22 @@ class GameImage:
         """
 
         # For load image
-        self.file_path = file_path
+        self.FilePath = file_path
 
         # Parameter for crop images
-        self.x = x
-        self.y = y
-        self.w = w
-        self.h = h
+        self.X = x
+        self.Y = y
+        self.W = w
+        self.H = h
 
         # Parameter for resizing image
-        self.width = width
-        self.height = height
+        self.Width = width
+        self.Height = height
 
         # Parameter surface PyGame
         self.surface = pygame.transform.scale(
-            (pygame.image.load(self.file_path)).subsurface(
-                self.x, self.y, self.w, self.h), (self.width, self.height))
+            (pygame.image.load(self.FilePath)).subsurface(
+                self.X, self.Y, self.W, self.H), (self.Width, self.Height))
 
 
 def main():

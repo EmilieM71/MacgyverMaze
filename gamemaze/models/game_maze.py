@@ -7,7 +7,7 @@ from gamemaze.constants import (WALL_CHAR, START_CHAR, END_CHAR, KEEPER_IMAGE,
                                 NEEDLE_IMAGE, TUBE_IMAGE, ETHER_IMAGE)
 
 
-class Maze:
+class GameMaze:
 
     def __init__(self, file_path):
         """class that characterizes the elements of the labyrinth by their names,
@@ -30,6 +30,7 @@ class Maze:
         self.Elements = []
         self.Height = 0
         self.Width = 0
+        self.Inventory = 0
 
     def load_from_file(self):
         start = GameImage(FLOOR_TILES, 160, 20, 20, 20, SIZE_SPRITE, SIZE_SPRITE)
@@ -44,55 +45,48 @@ class Maze:
                 self.Height += 1
                 for x, c in enumerate(line):
                     if y == 1:
-                        self.Width += 1
+                        if c != '\n':
+                            self.Width += 1
                     if c == START_CHAR:
                         self.Elements.append(
                             Element('start', start.surface,
-                                    x * SIZE_SPRITE, y * SIZE_SPRITE,
+                                    x, y,
                                     ElementBehavior(3)))
                     elif c == END_CHAR:
                         self.Elements.append(
                             Element('end', end.surface,
-                                    x * SIZE_SPRITE, y * SIZE_SPRITE,
+                                    x, y,
                                     ElementBehavior(4)))
                         self.Elements.append(
                             Element('keeper', keeper.surface,
-                                    x * SIZE_SPRITE, y * SIZE_SPRITE,
+                                    x, y,
                                     ElementBehavior(1)))
                     elif c == WALL_CHAR:
                         self.Elements.append(
                             Element('wall', wall.surface,
-                                    x * SIZE_SPRITE, y * SIZE_SPRITE,
+                                    x, y,
                                     ElementBehavior(1)))
+        # print(self.Elements)
+        item = 0
+        while self.Inventory < 3:
+            list_object = [['needle', needle.surface],
+                           ['tube', tube.surface],
+                           ['ether', ether.surface]]
+            x = randint(0, self.Width - 1)
+            y = randint(0, self.Height - 1)
 
-        inventory = 0
-        while inventory < 4:
-            x = randint(0, self.Width)
-            y = randint(0, self.Height)
-            for element in self.Elements:
-                if x * SIZE_SPRITE != element.X and y * SIZE_SPRITE != element.Y:
-                    inventory += 1
-                    if inventory == 1:
-                        self.Elements.append(
-                            Element('needle', needle.surface,
-                                    x * SIZE_SPRITE, y * SIZE_SPRITE,
-                                    ElementBehavior(2)))
-                    elif inventory == 2:
-                        self.Elements.append(
-                            Element('tube', tube.surface,
-                                    x * SIZE_SPRITE, y * SIZE_SPRITE,
-                                    ElementBehavior(2)))
-                    elif inventory == 3:
-                        self.Elements.append(
-                            Element('ether', ether.surface,
-                                    x * SIZE_SPRITE, y * SIZE_SPRITE,
-                                    ElementBehavior(2)))
-        print(self.Elements)
+            el = [element for element in self.Elements if element.X == x and element.Y == y]
+            if not el:
+                self.Elements.append(
+                    Element(list_object[item][0], list_object[item][1],
+                            x, y, ElementBehavior(2)))
+                item += 1
+                self.Inventory += 1
 
     def display(self, window_name):
         """Function that allows to display the labyrinth """
         for element in self.Elements:
-            window_name.blit(element.Image, (element.X, element.Y))
+            window_name.blit(element.Image, (element.X*SIZE_SPRITE, element.Y*SIZE_SPRITE))
 
 
 def main():

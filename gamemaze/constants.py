@@ -31,7 +31,7 @@ HOME_SOURCE = "resource/images/MacGyver.png"
 # COLORS
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
-GRAY = (225, 225, 225)
+GRAY = (50, 50, 50)
 
 # HOME TEXT
 HOME_TEXTS = [("Press ESCAPE to quit or key F1 to F10 to choose your character", 455),

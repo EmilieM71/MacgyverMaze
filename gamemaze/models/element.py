@@ -37,7 +37,7 @@ class Element:
     def __repr__(self):
         """When we enter our object in the interpreter the method
         modifies the display of the object when it is called"""
-        return "({}, {}, ({}, {}), {})".format(self.Name, self.Image, self.X, self.Y, self.Behavior)
+        return "[{}, {}, ({}, {}), {}]".format(self.Name, self.Image, self.X, self.Y, self.Behavior)
 
 
 def main():
