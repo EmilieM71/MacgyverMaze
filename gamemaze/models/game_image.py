@@ -2,6 +2,8 @@ import pygame
 
 
 class GameImage:
+    """ Class to load images with their path (constants), to trim and resize
+    them, then transform them into usable surface by PyGame"""
 
     def __init__(self, file_path, x, y, w, h, width, height):
         """
@@ -51,7 +53,7 @@ class GameImage:
 
         # Parameter surface PyGame
         self.surface = pygame.transform.scale(
-            (pygame.image.load(self.FilePath)).subsurface(
+            (pygame.image.load(self.FilePath).convert_alpha()).subsurface(
                 self.X, self.Y, self.W, self.H), (self.Width, self.Height))
 
 

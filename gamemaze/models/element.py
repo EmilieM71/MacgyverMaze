@@ -1,8 +1,11 @@
 class Element:
+    """ the maze is composed of elements. Each element is characterized by its
+    name, its image, the position in x and y, and its behavior when moving
+    the hero."""
 
     def __init__(self, name, image, x, y, behavior):
-        """class that characterizes the elements of the labyrinth by their names,
-        images, positions and behaviors.
+        """class that characterizes the elements of the labyrinth by their
+        names, images, positions and behaviors.
 
         Args:
             name (String): is the name of the element
@@ -20,7 +23,7 @@ class Element:
             the hero tries to move on it
 
         The origin of the coordinate system is at the top and left of the maze.
-        x increases when moving to the right and y increases when you move down.
+        x increases when moving to the right and y when you move down.
 
         """
         self.Name = name
@@ -37,7 +40,8 @@ class Element:
     def __repr__(self):
         """When we enter our object in the interpreter the method
         modifies the display of the object when it is called"""
-        return "[{}, {}, ({}, {}), {}]".format(self.Name, self.Image, self.X, self.Y, self.Behavior)
+        return "[{}, {}, ({}, {}), {}]".format(self.Name, self.Image, self.X,
+                                               self.Y, self.Behavior)
 
 
 def main():

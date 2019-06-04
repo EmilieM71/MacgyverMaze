@@ -3,29 +3,31 @@ from gamemaze.models.element import Element
 from gamemaze.models.element_behavior import ElementBehavior
 from gamemaze.models.game_image import GameImage
 from gamemaze.constants import (WALL_CHAR, START_CHAR, END_CHAR, KEEPER_IMAGE,
-                                SIZE_SPRITE, FLOOR_TILES, STRUCTURE_WALL,
+                                CASE_SIZE, FLOOR_TILES, STRUCTURE_WALL,
                                 NEEDLE_IMAGE, TUBE_IMAGE, ETHER_IMAGE)
 
 
 class GameMaze:
+    """ class which allows to recover from a file all the elements
+    constituting the maze"""
 
     def __init__(self, file_path):
-        """class that characterizes the elements of the labyrinth by their names,
-                images, positions and behaviors.
+        """class that characterizes the elements of the labyrinth by their
+        names, mages, positions and behaviors.
 
-                Args:
-                    :param file_path (String): path of the file that contains the
-                    structure of the level
+        Args:
+            :param file_path (String): path of the file that contains the
+            structure of the level
 
-                    :param list[Element] : list of elements that characterizes the maze
+            :param list[Element] : list of elements that characterizes the maze
 
-                    :param (int) : width corresponding to the number of characters in the
-                    first line of the file determined by the load_from_file method
+            :param (int) : width corresponding to the number of characters in
+            the first line of the file determined by the load_from_file method
 
-                    :param(int) : height corresponding to the number of rows in the file
-                    determined by the load_from_file method
+            :param(int) : height corresponding to the number of rows in the
+            file determined by the load_from_file method
 
-                """
+        """
         self.FilePath = file_path
         self.Elements = []
         self.Height = 0
@@ -33,13 +35,17 @@ class GameMaze:
         self.Inventory = 0
 
     def load_from_file(self):
-        start = GameImage(FLOOR_TILES, 160, 20, 20, 20, SIZE_SPRITE, SIZE_SPRITE)
-        end = GameImage(FLOOR_TILES, 220, 20, 20, 20, SIZE_SPRITE, SIZE_SPRITE)
-        wall = GameImage(STRUCTURE_WALL, 40, 20, 20, 20, SIZE_SPRITE, SIZE_SPRITE)
-        keeper = GameImage(KEEPER_IMAGE, 0, 0, 32, 36, SIZE_SPRITE, SIZE_SPRITE)
-        needle = GameImage(NEEDLE_IMAGE, 0, 0, 545, 720, SIZE_SPRITE, SIZE_SPRITE)
-        tube = GameImage(TUBE_IMAGE, 0, 0, 259, 194, SIZE_SPRITE, SIZE_SPRITE)
-        ether = GameImage(ETHER_IMAGE, 0, 0, 225, 225, SIZE_SPRITE, SIZE_SPRITE)
+        """Method to load all the elements of the maze"""
+
+        # loading images of maze elements
+        start = GameImage(FLOOR_TILES, 160, 20, 20, 20, CASE_SIZE, CASE_SIZE)
+        end = GameImage(FLOOR_TILES, 220, 20, 20, 20, CASE_SIZE, CASE_SIZE)
+        wall = GameImage(STRUCTURE_WALL, 40, 20, 20, 20, CASE_SIZE, CASE_SIZE)
+        keeper = GameImage(KEEPER_IMAGE, 0, 0, 32, 36, CASE_SIZE, CASE_SIZE)
+        needle = GameImage(NEEDLE_IMAGE, 0, 0, 545, 720, CASE_SIZE, CASE_SIZE)
+        tube = GameImage(TUBE_IMAGE, 0, 0, 259, 194, CASE_SIZE, CASE_SIZE)
+        ether = GameImage(ETHER_IMAGE, 0, 0, 225, 225, CASE_SIZE, CASE_SIZE)
+
         with open(self.FilePath, 'r') as file:
             for y, line in enumerate(file):
                 self.Height += 1
@@ -66,7 +72,6 @@ class GameMaze:
                             Element('wall', wall.surface,
                                     x, y,
                                     ElementBehavior(1)))
-        # print(self.Elements)
         item = 0
         while self.Inventory < 3:
             list_object = [['needle', needle.surface],
@@ -75,7 +80,8 @@ class GameMaze:
             x = randint(0, self.Width - 1)
             y = randint(0, self.Height - 1)
 
-            el = [element for element in self.Elements if element.X == x and element.Y == y]
+            el = [element for element in self.Elements if element.X == x
+                  and element.Y == y]
             if not el:
                 self.Elements.append(
                     Element(list_object[item][0], list_object[item][1],
@@ -84,9 +90,10 @@ class GameMaze:
                 self.Inventory += 1
 
     def display(self, window_name):
-        """Function that allows to display the labyrinth """
+        """Method that allows to display the maze """
         for element in self.Elements:
-            window_name.blit(element.Image, (element.X*SIZE_SPRITE, element.Y*SIZE_SPRITE))
+            window_name.blit(element.Image,
+                             (element.X*CASE_SIZE, element.Y*CASE_SIZE))
 
 
 def main():

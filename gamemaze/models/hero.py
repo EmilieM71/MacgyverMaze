@@ -1,15 +1,16 @@
 import pygame
-from gamemaze.constants import SIZE_SPRITE, GRAY, WHITE
+from gamemaze.constants import (CASE_SIZE, GRAY, WHITE, SYRINGE_IMAGE,
+                                HERO_SOURCE)
 from gamemaze.models.element_behavior import ElementBehavior
+from gamemaze.models.game_image import GameImage
 
 
 class Hero:
+    """ class to create the hero of the game, characterized by a name, an
+    image, and a starting position."""
 
     def __init__(self, name, image, maze, window):
-        """class to create the characters of the game,
-        characterized by a name, an image, and a starting position.
-        With a method that displays them.
-
+        """
         Args:
             name (String): is the name of the character
 
@@ -21,106 +22,116 @@ class Hero:
             window [GameWindow]
 
         The origin of the coordinate system is at the top and left of the maze.
-        x increases when moving to the right and y increases when you move down.
+        x increases when moving to the right and y when you move down.
 
         """
         self.Name = name
         self.Image = image
+        # GameImage(HERO_SOURCE, 0, 0, 32, 32, CASE_SIZE, CASE_SIZE).surface
 
         self.Maze = maze
         self.Window = window
 
         # position of the element whose name is start
-        self.X = [element.X for element in self.Maze.Elements if element.Name == 'start']
-        self.Y = [element.Y for element in self.Maze.Elements if element.Name == 'start']
-
-        # X and y coordinate used when moving the hero
-        self.New_X = self.X[0]
-        self.New_Y = self.Y[0]
+        start_element = [element for element in self.Maze.Elements
+                         if element.Name == 'start'][0]
+        self.X = start_element.X
+        self.Y = start_element.Y
 
     def display(self):
         """method for displaying the elements that form the maze"""
-        self.Window.blit(self.Image, (self.New_X*SIZE_SPRITE, self.New_Y*SIZE_SPRITE))
+        self.Window.surface.blit(self.Image, (
+            self.X*CASE_SIZE, self.Y*CASE_SIZE))
 
     def move(self, direction):
+        """Method to move the hero"""
+        # Save actual position
+        new_x = self.X
+        new_y = self.Y
 
         # Move to the right
         if direction == 'right':
-            self.New_X += 1
+            new_x += 1
         # Move to the left
         elif direction == 'left':
-            self.New_X -= 1
+            new_x -= 1
         # Move to the down
         elif direction == 'down':
-            self.New_Y += 1
+            new_y += 1
         # Move to the up
         elif direction == 'up':
-            self.New_Y -= 1
+            new_y -= 1
+
+        # test if new position is out of maze
+        if (new_x < 0 or new_x > self.Maze.Width - 1) \
+                or (new_y < 0 or new_y > self.Maze.Height - 1):
+            return
+
         # Search if the new position is the same as an element of the maze
-        el_b = [el.Behavior for el in self.Maze.Elements if self.New_X == el.X and self.New_Y == el.Y]
-        if not el_b:
-            # we check that the new position is in the maze
-            if 0 <= self.New_X <= self.Maze.Width-1 and 0 <= self.New_Y <= self.Maze.Height-1:
-                # Move hero
-                self.display()
-            else:
-                if direction == 'right':
-                    self.New_X -= 1
-                # Move to the left
-                elif direction == 'left':
-                    self.New_X += 1
-                # Move to the down
-                elif direction == 'down':
-                    self.New_Y -= 1
-                # Move to the up
-                elif direction == 'up':
-                    self.New_Y += 1
-        elif el_b[0] == ElementBehavior(2):
-            self.pick_up()
+        current_element = [el for el in self.Maze.Elements
+                           if new_x == el.X and new_y == el.Y]
+        if current_element \
+                and current_element[0].Behavior == ElementBehavior.block:
+            return
+        else:
+            if current_element \
+                    and current_element[0].Behavior == ElementBehavior.pick_up:
+                self.pick_up(current_element[0])
+            elif current_element \
+                    and current_element[0].Behavior == ElementBehavior.end:
+                self.end_game()
+            self.X = new_x
+            self.Y = new_y
             self.display()
-        elif el_b[0] == ElementBehavior(4):
-            self.display()
-            self.end_game()
-        elif el_b[0] == ElementBehavior(3):
-            self.display()
-        elif el_b[0] == ElementBehavior(1):
-            if direction == 'right':
-                self.New_X -= 1
-            # Move to the left
-            elif direction == 'left':
-                self.New_X += 1
-            # Move to the down
-            elif direction == 'down':
-                self.New_Y -= 1
-            # Move to the up
-            elif direction == 'up':
-                self.New_Y += 1
 
-    def pick_up(self):
-        name_object = [el.Name for el in self.Maze.Elements if self.New_X == el.X and self.New_Y == el.Y]  # ['needle']
-        for ob in self.Maze.Elements:
-            if ob.Name == name_object[0]:
-                if self.Maze.Inventory == 3:
-                    y = 60
-                elif self.Maze.Inventory == 2:
-                    y = 90
-                elif self.Maze.Inventory == 1:
-                    y = 120
-                # display the image in the banner
-                self.Window.blit(ob.Image, (460, y))
+    def pick_up(self, element_to_pick_up):
+        """Method for picking up objects when the hero is in the same position
+        as the object :
+        - Deletes the image of the object
+        - Displays the image of the object picked up to the right of the game
+        - Decreases the inventory of objects to recover from 1
+        - Display the image of a syringe when the 3 objects are picked up
+        """
 
-                # delete image in maze
-                self.Maze.Elements.remove(ob)
+        syringe = GameImage(SYRINGE_IMAGE, 0, 0, 90, 90, CASE_SIZE, CASE_SIZE)
+        list_for_display = [[3, 60], [2, 90], [1, 120]]
+        display_pos = [el[1] for el in list_for_display
+                            if self.Maze.Inventory == el[0]][0]
 
-                # increment the object counter by 1
-                self.Maze.Inventory -= 1
+        # display the image in the banner
+        self.Window.surface.blit(element_to_pick_up.Image, (460, display_pos))
+        # delete image in maze
+        self.Maze.Elements.remove(element_to_pick_up)
+        # increment the object counter by 1
+        self.Maze.Inventory -= 1
+
+        if self.Maze.Inventory == 0:
+            text_syringe = pygame.font.Font(None, 20)
+            text_s = text_syringe.render("Vous avez une seringue ! ", True,
+                                         WHITE, GRAY)
+            self.Window.surface.blit(text_s, (460, 160))
+            self.Window.surface.blit(syringe.surface, (460, 200))
 
     def end_game(self):
+        """ Method that determines the end of the game when the hero is in the
+        same position as the goalkeeper. Check if the hero at all objects"""
+
+        keeper_element = [el for el in self.Maze.Elements
+                          if el.Name == 'keeper'][0]
         if self.Maze.Inventory == 0:
+            # Display text "you win"
             text_end_win = pygame.font.Font(None, 30)
             text_win = text_end_win.render("you win", True, WHITE, GRAY)
-            self.Window.blit(text_win, (455, 160))
+            self.Window.surface.blit(text_win, (455, 250))
+            # delete keeper image in maze
+            self.Maze.Elements.remove(keeper_element)
+
+            self.X += 1
+            self.Y += 1
+            self.display()
+
+
         else:
             text_end_lose = pygame.font.Font(None, 30)
             text_lose = text_end_lose.render("you lose", True, WHITE, GRAY)
-            self.Window.blit(text_lose, (455, 160))
+            self.Window.surface.blit(text_lose, (455, 250))
