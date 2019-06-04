@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import (QUIT, KEYDOWN, K_ESCAPE, K_RIGHT, K_LEFT,
-                           K_DOWN, K_UP)
+                           K_DOWN, K_UP, K_RETURN)
 from gamemaze.constants import (COTE_WINDOW, GRAY, WHITE, BLACK, HOME_TEXTS,
                                 COTE_SCREEN_GAME, BANNER_SIZE, IMAGE_ICON,
                                 TITLE_WINDOW, HERO_SOURCE, CASE_SIZE)
@@ -70,6 +70,10 @@ class Game:
                         mg.move('down')
                     elif event.key == K_UP:
                         mg.move('up')
+
+                    elif event.key == K_RETURN:
+                        self.State = False
+                        self.start_part()
 
             # Refresh the display
             pygame.display.flip()
