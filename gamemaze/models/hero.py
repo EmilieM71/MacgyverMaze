@@ -174,7 +174,7 @@ class Hero:
                 missing_object, True, WHITE, GRAY)
             self.Window.surface.blit(text_name_object, (455, 310))
 
-        # Propose a new game
+        # Display text for propose a new game
         text_new_game = pygame.font.Font(None, 20)
         text_for_new_game = text_new_game.render(
             "Appuie sur ENTER pour rejouer", True, WHITE, GRAY)

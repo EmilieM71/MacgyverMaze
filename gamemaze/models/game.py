@@ -16,7 +16,7 @@ class Game:
 
     def start_part(self):
         # Create window :
-        window = GameWindow('window', COTE_WINDOW, COTE_WINDOW, IMAGE_ICON,
+        window = GameWindow(COTE_WINDOW, COTE_WINDOW, IMAGE_ICON,
                             TITLE_WINDOW, BLACK)
 
         window.new_window()

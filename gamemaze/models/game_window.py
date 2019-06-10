@@ -6,9 +6,8 @@ from gamemaze.constants import BLACK, WHITE, GRAY
 class GameWindow:
     """class use to create a new window, with title, icon, background"""
 
-    def __init__(self, name, height, width, icon_image, title, bg_color):
+    def __init__(self, height, width, icon_image, title, bg_color):
         """Create a window with title and icon."""
-        self.Name = name
         self.Height = height
         self.Width = width
         self.IconImage = icon_image
